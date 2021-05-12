@@ -1,0 +1,351 @@
+CKD,Duration,Age,Gender,Occupation,Liquor,Water_Source,Water_Storage,Chronic_Illness
+0,36,38,Female,Housewife,Never,Tube Well,"Aluminium Containers, Clay Containers",No
+1,54,56,Male,Agriculture Related,Previously but not now,Tube Well,Others,Yes
+0,37,39,Male,Agriculture Related,Frequently,Tube Well,"Aluminium Containers, Clay Containers",No
+0,50,54,Female,Unemployed,Never,Tube Well,"Aluminium Containers, Clay Containers",No
+0,30,33,Male,Agriculture Related,Never,Tube Well,"Aluminium Containers, Clay Containers",Yes
+0,2,53,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",No
+1,51,60,Male,Agriculture Related,Frequently,Tube Well,"Alumimium Containers, Plastic Container",Yes
+1,18,57,Female,Unemployed,Never,Tube Well,Clay Containers,Yes
+1,50,45,Male,Agriculture Related,Never,Tube Well,Clay Containers,Yes
+1,64,71,Female,Unemployed,Never,Tube Well,Clay Containers,Yes
+1,7,54,Male,Agriculture Related,Occasionally,Tube Well,Clay Containers,Yes
+1,14,45,Male,Police / Armed Force,Occasionally,Tube Well,"Aluminium Containers, Clay Containers",Yes
+1,66,66,Female,Unemployed,Never,Tube Well,"Clay Containers, Plastic Containers",Yes
+1,51,57,Male,Agriculture Related,Previously but not now,Well,"Clay Containers, Plastic Containers",Yes
+1,40,64,Male,Unemployed,Previously but not now,Tube Well,"Clay Containers, Plastic Containers",Yes
+1,45,62,Male,Agriculture Related,Previously but not now,Well,Clay Containers,Yes
+1,12,47,Male,Agriculture Related,Occasionally,Well,"Clay Containers, Plastic Containers",Yes
+1,10,44,Female,Unemployed,Never,Tube Well,Clay Containers,Yes
+1,53,64,Male,Agriculture Related,Never,Well,Clay Containers,Yes
+1,25,56,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,19,61,Female,Housewife,Never,Well,Clay Containers,Yes
+1,20,60,Male,Police / Armed Force,Previously but not now,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,14,57,Female,Housewife,Never,Well,Plastic Containers,Yes
+1,20,62,Male,Police / Armed Force,Previously but not now,Well,"Clay Containers, Plastic Containers",Yes
+1,20,53,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers",Yes
+1,15,23,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,43,46,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,31,56,Male,Agriculture Related,Occasionally,Well,Clay Containers,Yes
+0,12,37,Male,Police / Armed Force,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,12,34,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,36,67,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,36,61,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+0,23,53,Male,Police / Armed Force,Previously but not now,Well,Aluminium Containers,No
+0,23,44,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,20,23,Female,Unemployed,Never,Well,Aluminium Containers,No
+0,18,21,Female,Unemployed,Never,Well,Aluminium Containers,No
+0,16,19,Male,Unemployed,Never,Well,Aluminium Containers,No
+0,10,39,Male,Police / Armed Force,Never,Well,Aluminium Containers,No
+0,10,32,Female,Agriculture Related,Never,Well,Aluminium Containers,Yes
+0,8,32,Male,Police / Armed Force,Never,Well,Plastic Containers,No
+0,8,30,Female,Unemployed,Never,Well,Plastic Containers,No
+0,12,38,Male,Police / Armed Force,Previously but not now,Well,Clay Containers,No
+0,12,30,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,5,34,Male,Police / Armed Force,Never,Well,Others,No
+0,5,33,Female,Agriculture Related,Never,Well,Others,No
+0,30,57,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,30,58,Male,Agriculture Related,Frequently,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,29,22,Male,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,25,57,Male,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",Yes
+0,25,53,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,25,28,Male,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,44,Male,Police / Armed Force,Occasionally,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,30,47,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+0,17,20,Male,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,16,19,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,39,46,Male,Agriculture Related,Occasionally,Well,Plastic Containers,No
+0,20,42,Female,Agriculture Related,Never,Well,Plastic Containers,No
+0,16,19,Male,Unemployed,Never,Well,Plastic Containers,No
+1,30,60,Male,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",Yes
+0,30,56,Female,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",No
+0,38,40,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,19,40,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,17,20,Male,Agriculture Related,Never,Well,Clay Containers,No
+0,20,50,Male,Police / Armed Force,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,20,51,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",Yes
+0,20,25,Male,Police / Armed Force,Never,Well,"Clay Containers, Plastic Containers",No
+0,7,30,Male,Police / Armed Force,Never,Well,"Clay Containers, Plastic Containers",No
+0,19,22,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,25,42,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,19,39,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,16,19,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,26,62,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers",No
+1,26,54,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",Yes
+0,19,22,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",No
+0,23,25,Male,Others,Never,Pipe Borne,Plastic Containers,No
+0,20,54,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+0,20,41,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,40,42,Male,Police / Armed Force,Never,Well,Clay Containers,No
+0,44,71,Female,Unemployed,Never,Well,Clay Containers,Yes
+0,30,33,Female,Unemployed,Never,Well,Clay Containers,Yes
+0,13,47,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,10,38,Male,Police / Armed Force,Never,Well,Aluminium Containers,Yes
+0,10,36,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,20,48,Male,Agriculture Related,Never,Well,Clay Containers,No
+0,20,45,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,12,34,Male,Agriculture Related,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+0,4,29,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",No
+0,20,40,Male,Agriculture Related,Frequently,Well,Aluminium Containers,No
+0,20,58,Female,Unemployed,Never,Well,Aluminium Containers,Yes
+0,20,37,Female,Unemployed,Never,Well,Aluminium Containers,No
+0,17,20,Female,Unemployed,Never,Well,Aluminium Containers,No
+0,20,49,Male,Agriculture Related,Never,Well,Plastic Containers,No
+0,20,41,Female,Agriculture Related,Never,Well,Plastic Containers,No
+0,21,49,Female,Unemployed,Never,Tube Well,Clay Containers,No
+0,20,24,Female,Unemployed,Never,Tube Well,Clay Containers,No
+0,19,22,Female,Unemployed,Never,Tube Well,Clay Containers,No
+0,1,34,Male,Others,Never,Well,Clay Containers,No
+0,22,30,Female,Agriculture Related,Never,Well,Plastic Containers,No
+0,2,20,Female,Unemployed,Never,Well,Plastic Containers,No
+0,16,48,Male,Agriculture Related,Previously but not now,Well,Clay Containers,Yes
+0,16,44,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,16,19,Male,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",No
+0,30,45,Male,Agriculture Related,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,30,35,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+0,23,53,Female,Housewife,Never,Well,Plastic Containers,No
+0,17,20,Female,Unemployed,Never,Well,Plastic Containers,No
+0,10,52,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,10,57,Female,Housewife,Never,Well,Clay Containers,Yes
+0,10,31,Female,Housewife,Never,Well,Clay Containers,No
+0,18,58,Female,Housewife,Never,Tube Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,18,30,Female,Housewife,Never,Tube Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,15,22,Female,Housewife,Never,Tube Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,10,35,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",No
+0,20,50,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",No
+0,20,46,Female,Agriculture Related,Never,Tube Well,"Alumimium Containers, Plastic Container",No
+0,19,21,Female,Unemployed,Never,Tube Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,21,53,Male,Office Work,Occasionally,Well,Plastic Containers,No
+0,21,48,Female,Unemployed,Never,Well,Plastic Containers,No
+0,21,26,Male,Police / Armed Force,Never,Well,Plastic Containers,No
+0,1,20,Female,Unemployed,Never,Well,Plastic Containers,No
+0,21,29,Male,Police / Armed Force,Never,Well,Plastic Containers,No
+0,6,26,Female,Unemployed,Never,Well,Plastic Containers,Yes
+0,21,50,Male,Agriculture Related,Never,Tube Well,"Aluminium Containers, Clay Containers",No
+0,21,41,Female,Agriculture Related,Never,Tube Well,"Aluminium Containers, Clay Containers",No
+0,25,51,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,25,48,Female,Agriculture Related,Never,Well,Clay Containers,Yes
+0,20,62,Male,Agriculture Related,Frequently,Well,Aluminium Containers,No
+0,20,59,Female,Agriculture Related,Never,Well,Aluminium Containers,Yes
+0,20,45,Male,Manual Worker,Never,Well,Plastic Containers,Yes
+0,10,42,Female,Agriculture Related,Never,Well,Plastic Containers,No
+0,14,23,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers",No
+0,17,20,Male,Unemployed,Never,Well,Plastic Containers,No
+0,20,55,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,20,46,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,19,48,Male,Police / Armed Force,Never,Tube Well,"Clay Containers, Plastic Containers",No
+0,19,41,Female,Agriculture Related,Never,Tube Well,"Clay Containers, Plastic Containers",No
+0,18,20,Male,Unemployed,Never,Tube Well,"Clay Containers, Plastic Containers",No
+0,12,35,Male,Police / Armed Force,Never,Well,Clay Containers,No
+0,12,32,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,11,50,Male,Police / Armed Force,Occasionally,Well,"Alumimium Containers, Plastic Container",No
+0,11,48,Female,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",No
+0,7,49,Male,Agriculture Related,Never,Well,Plastic Containers,No
+0,30,49,Female,Unemployed,Never,Well,Clay Containers,No
+0,9,45,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,9,18,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,25,29,Male,Manual Worker,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,3,25,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,10,41,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers",No
+0,10,28,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+0,18,54,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+0,13,37,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,32,34,Male,Fishing,Never,Well,Clay Containers,No
+0,3,35,Male,Others,Never,Well,"Clay Containers, Plastic Containers",No
+0,43,46,Male,Others,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,23,53,Male,Others,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,42,48,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",Yes
+0,10,29,Female,Police / Armed Force,Never,Well,Plastic Containers,No
+0,32,34,Male,Agriculture Related,Never,Well,Plastic Containers,No
+0,10,32,Female,Housewife,Never,Well,Plastic Containers,No
+0,45,45,Female,Housewife,Never,Well,Clay Containers,No
+0,30,38,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,35,47,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,55,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,7,27,Female,Housewife,Never,Well,Clay Containers,No
+0,62,65,Female,Housewife,Never,Well,Clay Containers,No
+0,26,28,Female,Housewife,Never,Well,Clay Containers,No
+0,30,55,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+0,25,53,Male,Others,Never,Well,"Aluminium Containers, Clay Containers",Yes
+0,3,47,Female,Agriculture Related,Never,Well,Plastic Containers,No
+0,25,51,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,10,30,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,53,Male,Fishing,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+0,30,56,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",No
+0,30,36,Male,Police / Armed Force,Occasionally,Well,Clay Containers,No
+0,23,67,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,25,65,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,12,32,Female,Housewife,Never,Well,Plastic Containers,No
+0,28,30,Male,Police / Armed Force,Occasionally,Well,"Clay Containers, Plastic Containers",No
+0,15,55,Male,Others,Never,Well,Clay Containers,No
+0,17,48,Male,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",No
+0,43,45,Female,Housewife,Never,Well,"Alumimium Containers, Plastic Container",No
+0,17,19,Male,Unemployed,Never,Well,Plastic Containers,No
+0,6,69,Male,Agriculture Related,Occasionally,Well,Plastic Containers,No
+1,5,52,Female,Housewife,Never,Well,Plastic Containers,Yes
+0,23,26,Male,Fishing,Never,Well,Clay Containers,No
+0,30,56,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+0,33,63,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",No
+0,16,23,Female,Unemployed,Never,Well,Clay Containers,No
+0,35,38,Female,Police / Armed Force,Never,Well,Clay Containers,No
+0,19,21,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,16,18,Female,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,29,31,Male,Fishing,Occasionally,Well,Aluminium Containers,No
+0,7,26,Female,Housewife,Never,Well,Aluminium Containers,No
+0,23,59,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,22,50,Male,Police / Armed Force,Occasionally,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,19,23,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,18,20,Male,Unemployed,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,46,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+0,3,24,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",No
+0,16,43,Male,Police / Armed Force,Occasionally,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,5,25,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,30,60,Male,Police / Armed Force,Previously but not now,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,37,59,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",Yes
+0,40,61,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",Yes
+0,35,57,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,42,46,Male,Police / Armed Force,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+0,20,22,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,8,31,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",No
+0,36,38,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,20,36,Male,Agriculture Related,Occasionally,Well,Plastic Containers,No
+0,10,30,Female,Housewife,Never,Well,"Alumimium Containers, Plastic Container",No
+0,30,61,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+0,48,61,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",No
+1,16,50,Male,Agriculture Related,Frequently,Well,"Alumimium Containers, Plastic Container",Yes
+0,35,38,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,30,33,Male,Police / Armed Force,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+0,26,29,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,49,52,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,50,66,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,33,37,Male,Police / Armed Force,Never,Well,Clay Containers,No
+0,3,29,Female,Housewife,Never,Well,Clay Containers,No
+0,49,69,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,25,49,Male,Agriculture Related,Frequently,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,12,32,Female,Housewife,Never,Well,Clay Containers,No
+0,18,45,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,54,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,19,22,Male,Police / Armed Force,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,55,55,Male,Agriculture Related,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+0,15,18,Male,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,69,71,Male,Agriculture Related,Occasionally,Well,Clay Containers,Yes
+0,40,42,Female,Housewife,Never,Well,Clay Containers,No
+0,22,46,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,5,29,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+0,10,45,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,29,56,Male,Agriculture Related,Occasionally,Well,Clay Containers,No
+0,25,27,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,17,41,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,10,30,Female,Agriculture Related,Never,Well,Clay Containers,No
+0,8,32,Female,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",No
+0,30,34,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,25,28,Male,Agriculture Related,Frequently,Well,"Aluminium Containers, Clay Containers",No
+0,3,25,Female,Housewife,Never,Well,Clay Containers,No
+0,32,53,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+0,31,34,Male,Agriculture Related,Never,Tube Well,Plastic Containers,No
+0,7,33,Female,Housewife,Never,Tube Well,"Clay Containers, Plastic Containers",No
+0,25,47,Male,Police / Armed Force,Never,Tube Well,Plastic Containers,No
+0,42,44,Female,Housewife,Never,Tube Well,Plastic Containers,No
+0,15,27,Female,Unemployed,Never,Tube Well,Plastic Containers,No
+0,10,45,Male,Office Work,Never,Tube Well,Plastic Containers,No
+0,40,42,Female,Office Work,Never,Tube Well,Plastic Containers,No
+0,48,69,Female,Unemployed,Never,Tube Well,Plastic Containers,No
+0,50,69,Male,Agriculture Related,Never,Tube Well,"Plastic Containers, Others",Yes
+1,39,65,Male,Unemployed,Previously but not now,Tube Well,"Alumimium Containers, Plastic Container",Yes
+1,49,51,Male,Agriculture Related,Occasionally,Tube Well,"Clay Containers, Plastic Containers",No
+1,30,69,Male,Unemployed,Previously but not now,Tube Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,9,43,Male,Office Work,Never,Tube Well,Plastic Containers,Yes
+1,35,60,Female,Others,Never,Tube Well,Plastic Containers,Yes
+1,63,65,Male,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",Yes
+1,40,42,Male,Agriculture Related,Never,Tube Well,"Aluminium Containers, Clay Containers",Yes
+1,53,54,Male,Others,Occasionally,Well,Clay Containers,Yes
+1,51,68,Female,Housewife,Never,Pipe Borne,"Alumimium Containers, Plastic Container",Yes
+1,50,64,Female,Unemployed,Never,Well,Clay Containers,Yes
+1,52,54,Male,Manual Worker,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,60,62,Male,Unemployed,Previously but not now,Well,"Plastic Containers, Others",Yes
+1,28,30,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,30,38,Male,Others,Never,Well,Others,No
+1,7,30,Female,Housewife,Never,Well,Plastic Containers,Yes
+1,30,59,Male,Unemployed,Occasionally,Well,Clay Containers,No
+1,55,82,Male,Unemployed,Never,Well,Clay Containers,Yes
+1,6,33,Female,Housewife,Never,Well,Plastic Containers,No
+1,19,45,Female,Others,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,46,48,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,57,59,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,50,53,Male,Agriculture Related,Previously but not now,Well,"Clay Containers, Plastic Containers",No
+1,63,72,Male,Others,Previously but not now,Well,"Clay Containers, Plastic Containers",Yes
+1,40,45,Male,Others,Never,Tube Well,Plastic Containers,Yes
+1,5,48,Male,Others,Never,Well,"Clay Containers, Plastic Containers",Yes
+1,30,61,Male,Agriculture Related,Never,Well,"Plastic Containers, Others",Yes
+1,50,55,Female,Agriculture Related,Never,Well,Aluminium Containers,No
+1,11,30,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,54,57,Male,Agriculture Related,Occasionally,Tube Well,"Aluminium Containers, Clay Containers",Yes
+1,38,65,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,40,67,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,40,67,Male,Agriculture Related,Occasionally,Well,"Aluminium Containers, Clay Containers",No
+1,35,61,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,45,61,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,17,46,Female,Housewife,Never,Well,Clay Containers,Yes
+1,11,60,Male,Others,Never,Well,Aluminium Containers,Yes
+1,20,50,Male,Agriculture Related,Never,Well,Clay Containers,Yes
+1,20,74,Female,Unemployed,Never,Well,Aluminium Containers,Yes
+1,6,82,Male,Unemployed,Never,Well,Aluminium Containers,Yes
+1,37,40,Female,Housewife,Never,Well,"Alumimium Containers, Plastic Container",No
+1,5,35,Female,Housewife,Never,Well,"Clay Containers, Plastic Containers",No
+1,31,58,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,54,56,Female,Housewife,Never,Well,"Alumimium Containers, Plastic Container",Yes
+1,46,49,Female,Housewife,Never,Well,"Alumimium Containers, Plastic Container",No
+1,65,68,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,50,63,Male,Agriculture Related,Occasionally,Well,"Aluminium Containers, Clay Containers",Yes
+1,10,65,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,55,60,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,50,69,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",No
+1,58,65,Male,Agriculture Related,Previously but not now,Well,Aluminium Containers,Yes
+1,60,65,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,45,48,Male,Office Work,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,45,59,Male,Agriculture Related,Never,Well,Clay Containers,Yes
+1,30,69,Male,Agriculture Related,Previously but not now,Well,"Alumimium Containers, Plastic Container",Yes
+1,30,67,Female,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",Yes
+1,40,68,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers",Yes
+1,29,63,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,1,49,Male,Agriculture Related,Previously but not now,Well,Aluminium Containers,No
+1,31,53,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,53,62,Male,Agriculture Related,Previously but not now,Well,Aluminium Containers,Yes
+1,34,55,Male,Manual Worker,Never,Pipe Borne,Aluminium Containers,Yes
+1,55,66,Male,Agriculture Related,Previously but not now,Well,Aluminium Containers,Yes
+1,25,66,Female,Agriculture Related,Never,Well,Aluminium Containers,Yes
+1,23,26,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",No
+1,37,38,Male,Unemployed,Previously but not now,Well,"Aluminium Containers, Clay Containers",Yes
+1,32,64,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers",Yes
+1,30,59,Male,Agriculture Related,Previously but not now,Well,"Alumimium Containers, Plastic Container",Yes
+1,33,62,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,30,55,Male,Agriculture Related,Occasionally,Well,Aluminium Containers,No
+1,39,72,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,33,69,Female,Unemployed,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,35,71,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,40,54,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,32,52,Male,Agriculture Related,Previously but not now,Well,Aluminium Containers,Yes
+1,20,50,Male,Agriculture Related,Never,Well,Aluminium Containers,Yes
+1,27,40,Male,Unemployed,Never,Well,Plastic Containers,Yes
+1,34,37,Male,Agriculture Related,Never,Tube Well,Aluminium Containers,No
+1,40,68,Male,Agriculture Related,Never,Well,Plastic Containers,Yes
+1,40,51,Male,Agriculture Related,Frequently,Well,Aluminium Containers,No
+1,10,47,Male,Manual Worker,Previously but not now,Well,"Alumimium Containers, Plastic Container",No
+1,30,54,Female,Housewife,Never,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,12,50,Female,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
+1,43,61,Male,Agriculture Related,Occasionally,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,26,41,Female,Housewife,Never,Well,Aluminium Containers,Yes
+1,26,69,Male,Agriculture Related,Never,Well,Plastic Containers,Yes
+1,27,32,Male,Agriculture Related,Never,Well,Plastic Containers,Yes
+1,29,58,Male,Others,Previously but not now,Pipe Borne,"Aluminium Containers, Clay Containers",Yes
+1,25,42,Male,Others,Never,Well,Plastic Containers,Yes
+1,27,73,Male,Unemployed,Previously but not now,Well,Aluminium Containers,Yes
+1,27,70,Male,Agriculture Related,Occasionally,Well,"Alumimium Containers, Plastic Container",Yes
+1,27,69,Male,Agriculture Related,Previously but not now,Well,"Aluminium Containers, Clay Containers, Plastic Containers",Yes
+1,27,63,Male,Agriculture Related,Previously but not now,Well,"Alumimium Containers, Plastic Container",Yes
+1,14,50,Male,Agriculture Related,Occasionally,Well,Aluminium Containers,Yes
+1,8,62,Male,Agriculture Related,Never,Well,"Aluminium Containers, Others",Yes
+1,27,61,Male,Agriculture Related,Never,Well,"Clay Containers, Plastic Containers",Yes
+1,27,61,Female,Agriculture Related,Never,Well,"Alumimium Containers, Plastic Container",No
+1,29,59,Male,Agriculture Related,Previously but not now,Well,"Alumimium Containers, Plastic Container",Yes
+1,23,70,Male,Agriculture Related,Never,Well,"Aluminium Containers, Clay Containers",Yes
