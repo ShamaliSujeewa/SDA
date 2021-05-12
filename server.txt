@@ -1,0 +1,2426 @@
+library(shiny)
+library(shinydashboard)
+library(shinyjs)
+library(psych)
+library(plyr)
+library(faraway)
+library(ROCR) 
+library(pROC)
+library(DT)
+library(arm)
+library(glmnet)
+library(randomForest)
+library(ggplot2)
+library(ggpubr)
+library(gplots)
+library(car)
+library(RCurl)
+library(readr)
+
+options(digits.secs = 2) # Include milliseconds in time display
+
+
+shinyServer(function(input,output,session){
+  
+  
+  
+  Sys.sleep(2)
+  
+  # Hide the loading message when the rest of the server function has executed
+  hide(id = "loading-content", anim = TRUE, animType = "fade")    
+  #show("app-content")
+  
+  
+  
+  
+  ####################################
+  output$currentTime <- renderText({
+    # invalidateLater causes this output to automatically
+    # become invalidated when input$interval milliseconds
+    # have elapsed
+    invalidateLater(as.integer(1000), session)
+    
+    format(Sys.time())
+  })
+  
+  
+  
+   
+  
+  ############################################# Demonstration #######################################
+  
+  ## CreateImport Data set ##
+
+  demodata <- read.csv("https://raw.githubusercontent.com/ShamaliSujeewa/SDA/main/completedata.csv")
+  
+  
+  output$demotable1<- DT::renderDataTable(demodata , options=list(scrollX=TRUE))
+  
+  output$demodatatext <- renderText({"This demonstration dataset is collected from endemic and non-endemeic (control group) areas of disease prevalence, and the dataset includes of 9 variables and 350 observations. The objective is to fit models for prediction purpose, and to find the most affected factors for the prevalence of Chronic Kidney Disease (CKD) among the people. The description of variables are given below:"})
+  output$demodatatext1 <- renderText({"CKD:- Prevalence of CKD (0- No , 1-Yes)"})
+  output$demodatatext2 <- renderText({"Duration:- The period of the person lived in the relevant area"})
+  output$demodatatext3 <- renderText({"Age:- Age in years"})
+  output$demodatatext4 <- renderText({"Gender:- Male/Female"})
+  output$demodatatext5 <- renderText({"Occupation:- Category of the occupation"})
+  output$demodatatext6 <- renderText({"Liquor:- Status of taking Liquor"})
+  output$demodatatext7 <- renderText({"Water_Source:- Drinking water source."})
+  output$demodatatext8 <- renderText({"Water_Storage:- Container of the drinking water source"})
+  output$demodatatext9 <- renderText({"Chronic_Illness:- Whether the person is suffering with any chronic illness"})
+  
+  
+  ##### Factor Identification #####
+  
+  ### 1. Primary Analysis
+  
+  
+  output$factext1<-renderText({"This output shows basic summary statistics and graphs relevant to the selected variable. You can select any variable from the drop down list."})
+  
+  #output$factext2<-renderUI({
+    
+    #str1<-paste("Example: Select Age variable","\n")
+                                
+    #str2<-paste("Following outsputs can be observed from both numerically and graphically for age variable;","\n")
+    #str3<-paste("Minimum : 18 years")
+    #str4<-paste("1st Quartile: 33 years")
+    #str5<-paste("Median : 47 years")
+    #str6<-paste("Mean : 46 years")
+    #str7<-paste("3rd Quartile : 58 years")
+    #str8<-paste("Maximum: 82 years")
+    
+    #HTML(paste(str1, str2, str3,str4,str5,str6,str7,str8, sep = '<br/>'))
+    
+    
+    #})
+                                      
+  
+  #drop down list to select the variable name
+  output$dsumdropdown <- renderUI({ 
+    selectInput("ddropdown1","Select the Variable",sort(as.character(colnames(demodata))))
+    
+  })
+  
+  
+  #drop down list to select the variable name
+  output$dsumdropdown <- renderUI({ 
+    selectInput("ddropdown1","Select the Variable",sort(as.character(colnames(demodata))))
+    
+  })
+  
+  
+  #display summary according to the selected variable
+  output$dsumm <- renderPrint({
+    Variable <- demodata
+    Variable <- Variable[,input$ddropdown1]
+    if(class(Variable)== "integer")
+    {
+      summary(Variable)
+    }
+    else
+    {
+      table(Variable)
+    }
+    
+  })
+  
+  output$dsummplot <- renderPlot({
+    Variable <- demodata
+    Variable <- Variable[,input$ddropdown1]
+    if(class(Variable)== "integer")
+    {
+      hist(Variable)
+    }
+    else
+    {
+      pie(table(Variable))
+    }
+    
+  })
+  
+  output$factext3<-renderText({"This output shows 2*2 contigency table based on the selected two variables. The following output is shown for CKD as first variable and Gender as Second variable."})
+  
+  
+  #output$factext4<-renderUI({
+    
+    #str1<-paste("Example: Select CKD as first variable and Gender as Second variable","\n")
+    
+    #str2<-paste("Following outsputs can be obtained;")
+    #str3<-paste("Number of Females with CKD is 45")
+    #str4<-paste("Number of Females without CKD is 126")
+    #str5<-paste("Number of males with CKD is 84")
+    #str6<-paste("Number of males without CKD is 95")
+    
+    #HTML(paste(str1, str2, str3,str4,str5,str6, sep = '<br/>'))
+    
+    
+  #})
+  
+  
+  
+  #drop down list to select the contigency table variable name 1
+  output$dcondropvar1 <- renderUI({ 
+    selectInput("dconvar1","Select first variable:", as.character(colnames(demodata)))
+    
+  })
+  
+  
+  #drop down list to select the contingency table variable name 2
+  output$dcondropvar2 <- renderUI({ 
+    selectInput("dconvar2","Select second variable:", choices = list("Gender","Age","Occupation","Chronic_Illness","CKD","Duration","Liquor","Water_Source","Water_Storage"))
+    
+  })
+  
+  
+  
+  
+  #display contigency table
+  output$dconTable <- renderPrint({
+    df <- demodata
+    
+    variable_1 <- df[,input$dconvar1]
+    variable_2 <- df[,input$dconvar2]
+    
+    table(variable_1 , variable_2)
+    
+    
+  })
+  
+  
+  ###### 2. Random Forest Model
+  
+  
+  
+  output$dRF1 <- renderText({"Type Your Model as follows:"})
+  output$dRF2 <- renderText({"Dependent Variable ~ Factor1 + Factor2 + Factor3"})
+  output$dRF3 <- renderText({"You can use any number of variables to fit the model."})
+  
+  output$dRF4<- renderText({"Example : Full model Using all Variables"})
+  output$dRF5 <- renderText({"CKD ~ Duration + Age + Gender + Occupation + Liquor + Water_Source + Water_Storage + Chronic_Illness "})
+  
+  
+  #output$dRFmoddisplay <- renderUI({ 
+  #  textAreaInput("dRFmod", "Random Forest Model","Add Model" , width = "1000px")
+    
+  #})
+  
+  
+  output$dbtnRFmodel <- renderUI({ 
+    actionButton(inputId="dbtnRFmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  db2<-eventReactive(input$dbtnRFmod,demodata)
+  
+  output$dRFmodel <-renderPrint({db2()
+    set.seed(17)
+    ddf2<-demodata
+    output.forest <- randomForest::randomForest(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness , data=ddf2 ,importance=TRUE)
+    print(output.forest) # Summary of Full model
+    
+  })
+  
+  
+  # Random Forest Model Summary
+  output$dRFmodelsummary <-renderPrint({db2()
+    set.seed(17)
+    ddf2<-demodata
+    output.forest <- randomForest::randomForest(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf2 ,importance=TRUE)
+    summary(output.forest) 
+    
+  })
+  
+  
+  # Importance of the variables
+  output$dvarImportance <-renderPrint({db2()
+    set.seed(17)
+    ddf2<-demodata
+    output.forest <- randomForest::randomForest(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf2 ,importance=TRUE)
+    round(importance(output.forest,type = 2),2) 
+    
+  })
+  
+  # Error Vs Number of Trees graph
+  output$derrorplot <-renderPlot({db2()
+    set.seed(17)
+    ddf2<-demodata
+    output.forest <- randomForest::randomForest(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf2 ,importance=TRUE)
+    plot(output.forest) 
+    
+  })
+  
+
+  
+  ###### 3. Binary Logistic Model
+  
+  
+  output$factext5<-renderText({db3() 
+    "Coefficients of the full model and Significance of the variables are given in the above output."})
+  output$factext6<-renderText({db3()  
+    "After applying backward elimination method, the variables of the best fitted model having minimum AIC, and the coefficients are shown in the above output. Accordingly, the best fitted model for this dataset is the model with Age, Duration, Gender and Chronic Illness variables."})
+  
+  output$factext7<-renderText({db3()  
+    "The above Output shows the confidence limits of the variables in the best fitted model."})
+  
+  output$factext8<-renderText({db3()  
+    "The above output shows the Odds ratios of the best fitted model."})
+  
+  output$factext9<-renderText({db3()  
+    "The above Receiver operating characteristic graph (ROC) shows the prediction accuracy of the of the best fitted model."})
+  
+  output$factext10<-renderText({db3()  
+    "Area under curve is equal to 0.918. Therefore, the best fitted model has 91.8% prediction accuracy, and it is suitable for future predictions."})
+  
+  
+  output$dbin1 <- renderText({"Type Your Model as follows:"})
+  output$dbin2 <- renderText({"Dependent Variable ~ Factor1 + Factor2 + Factor3"})
+  output$dbin3 <- renderText({"You can use any number of variables to fit the model."})
+  
+  output$dbin4<- renderText({"Example : Full model Using all Variables"})
+  output$dbin5 <- renderText({"CKD ~ Duration + Age + Gender + Occupation + Liquor + Water_Source + Water_Storage + Chronic_Illness "})
+  
+  
+  
+  #output$dbinmoddisplay <- renderUI({ 
+    #textAreaInput("dbinmod", "Binary Logistic Model","Add Model" , width = "1000px")
+    
+  #})
+  
+  
+  output$dbtnbinmodel <- renderUI({ 
+    actionButton(inputId="dbtnbinmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  
+  
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dbinmodel <-renderPrint({db3()
+    
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    summary(fulmod) # Summary of Full model
+    
+  })
+  
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dbestbinmodel <-renderPrint({db3()
+    
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    backwards = step(fulmod)# Summary of best model
+    summary(backwards)
+  })
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dCIbestbinmodel <-renderPrint({db3()
+    
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    confint(step(fulmod))
+  })
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dORbestbinmodel <-renderPrint({db3()
+    
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    exp(coefficients(step(fulmod)))
+  })
+  
+  
+  
+ 
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dresdropdown <- renderUI({db3() 
+    selectInput("dres","Select Response Variable of the fitted model: ", "CKD")
+    
+  })
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$dROCCurve<-renderPlot({db3()
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    prob=predict(step(fulmod),type=c("response"))
+    pred <- prediction(prob, ddf3[,input$dres] )
+    roc = performance(pred, "tpr", "fpr")
+    windowsFonts(A = windowsFont("Times New Roman"))
+    plot(roc, colorize=T, lwd=2, family="A", cex.lab=2, cex.axis=2)
+    lines(x=c(0, 1), y=c(0, 1), col="grey", lty=2)
+    
+  })
+
+  
+  
+  
+
+  
+  
+  
+  db3<-eventReactive(input$dbtnbinmod,demodata)
+  output$auc<-renderPrint({db3()
+    
+    ddf3<-demodata
+    fulmod <- glm(CKD~Duration+Age+Gender+Occupation+Liquor+Water_Source+Water_Storage+Chronic_Illness, data=ddf3 ,family = binomial)
+    prob=predict(step(fulmod),type=c("response"))
+    pred <- prediction(prob, ddf3[,input$dres] )
+  
+    auc = performance(pred, "auc")
+    auc = unlist(auc@y.values)
+    
+    print(auc)  #
+  })
+  
+  
+  
+  ####### 4. LASSO Model
+  
+  Converteddemodata<- read.csv("https://raw.githubusercontent.com/ShamaliSujeewa/SDA/main/Convertedcompletedata.csv")
+  
+  output$dmainText1<-renderText({
+    "Please make sure to replace the levels of the categorical variables by the appropriate numerical values, and upload the data. To fit Lasso model, all data should be numerical."
+  })
+  
+  output$dmainText2<-renderText({
+    "For example, replace the levels of the categorical  Gender (Male/Female) as"
+  })
+  
+  output$dmainText3<-renderText({
+    "Female - 0, and  Male - 1."
+  })
+  
+  output$dmainText4<-renderText({
+    "Important: Here we used the previous dataset after replacing the levels of the categorical variables by numerical values."
+  })
+  
+  
+  
+  
+  output$dlass.col <- renderUI({ 
+    lass.data<-Converteddemodata
+    if(is.null(lass.data)) return(NULL)
+    
+    
+    vchoices<-1:ncol(lass.data)
+    names(vchoices)<-names(lass.data)
+    checkboxGroupInput("dcolumns","Select the predictor variables (Except CKD variable)",choices = vchoices, inline = T)
+  })
+  
+  
+  
+  observeEvent(input$dcolumns,{
+    lass.data<-Converteddemodata
+    cols<-as.double(input$dcolumns)
+    if(length(input$dcolumns)==1){
+      ddf4<-data.frame(lass.data[,cols])
+      names(ddf4)<-names(lass.data)[cols]
+      output$dmytable=renderDataTable(data.frame(ddf4))
+    }else{
+      output$dmytable = renderDataTable(data.frame(lass.data[,cols]))
+    }
+  })
+  
+  
+  output$dmainText5<-renderText({
+    "Select the response variable (In this case it is CKD)"
+  })
+  
+  
+  output$dlass.spe <- renderUI({ 
+    lass.data<-Converteddemodata
+    if(is.null(lass.data)) return(NULL)
+    
+    
+    spechoices<-1:ncol(lass.data)
+    names(spechoices)<-names(lass.data)
+    checkboxInput("dspe", "CKD", FALSE)
+    
+  })
+  
+  
+  
+  observeEvent(input$dspe,{
+    lass.spedata<-Converteddemodata
+    cols<-as.double(input$dspe)
+    if(length(input$dspe)==1){
+      ds.df<-data.frame(lass.spedata[,cols])
+      names(ds.df)<-names(lass.spedata)[cols]
+      output$dspetable=renderDataTable(data.frame(ds.df))
+    }else{
+      output$dspetable = renderDataTable(data.frame(lass.spedata[,cols]))
+    }
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  output$dbtnlassmodel <- renderUI({ 
+    actionButton(inputId="dbtnlassmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  
+  db4<-eventReactive(input$dbtnlassmod,Converteddemodata)
+  
+  output$dlasT1<-renderText({db4()
+    "Coefficients against the 100 of lambda values"
+  })
+  
+  
+  output$dlasT2<-renderText({db4()
+    "The following plot shows log of lambda versus the coefficients. This plot develops the models on a grid of values of lambda (about 100 values of lambda)."
+  })
+  
+  
+  
+  
+  output$dcof.lambda<-renderPlot({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    plot(fulmod,xvar="lambda",label=TRUE)
+  })
+  
+  
+  
+  output$dlasT3<-renderText({db4()
+    "Coefficients against the Fraction Deviance Explained"
+  })
+  
+  
+  
+  
+  output$ddev.lambda<-renderPlot({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    plot(fulmod,xvar="dev",label=TRUE)
+  })
+  
+  
+  
+  
+  output$dlasT4<-renderText({db4()
+    "Mean-Square Error of the model for each log of lambda"
+  })
+  
+  
+  output$dMSE.lambda<-renderPlot({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    plot(lasso.cv.out)
+  })
+  
+  
+  output$dlasT5<-renderText({db4()
+    "Selecting the best lambda value"
+  })
+  
+  
+  
+  output$dlasT6<-renderText({db4()
+    "The cross-validation can be used to choose the best lambda value. We can do this using cv.glmnet. By default, the function performs ten-fold cross-validation"
+  })
+  
+  
+  
+  output$dbest.lam<-renderPrint({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    best.lambda<-lasso.cv.out$lambda.min
+    print(best.lambda)
+  })
+  
+  
+  
+  output$dlasT7<-renderText({db4()
+    "Coefficients of the best fitted model"
+  })
+  
+  
+  
+  
+  output$dbest.mod<-renderPrint({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    best.lambda<-lasso.cv.out$lambda.min
+    predict(fulmod,s=best.lambda, type="coefficients")
+  })
+  
+  
+  
+  output$dlasT8<-renderText({db4()
+    "Summary of models with 100 lambda values"
+  })
+  
+  
+  
+  
+  output$dlassmodel <-renderPrint({db4()
+    set.seed(17)
+    lass.comdata<-Converteddemodata
+    xx<-as.numeric(input$dcolumns)
+    x<-as.matrix(data.frame(lass.comdata[,xx]))
+    yy<-as.numeric(input$dspe) 
+    y<-as.matrix(data.frame(lass.comdata[,yy])) 
+    
+    fulmod <- glmnet( x, y, alpha=0, family= "binomial")
+    print(fulmod) 
+    
+  })
+  
+  
+  
+  output$dlasT9<-renderText({db4()
+    "Coefficients models with 100 lambda values"
+  })
+  
+  
+  
+  output$dcoef<-renderPrint({db4()
+    set.seed(17)
+    comdata<-Converteddemodata
+    xxx<-as.numeric(input$dcolumns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$dspe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    predict(fulmod, type="coefficients")
+  })
+  
+  
+  
+  
+  
+  
+  output$factext11<-renderText({db2() 
+    "The above output shows the Random Forest Model having all predictor variables. The Mean Squared Error of residuals and the variance explained by the model are given from the Out of Bag Error Estimation."})
+    
+  output$factext12<-renderText({db2() 
+  "This output shows the importance of the variables. According to the output, Chronic Illness, Age, Duration and Water storage are the most important four variables to predict the presence of the CKD."})
+  
+  output$factext13<-renderText({db2()  
+    "This plot shows the Error and the Number of Trees. We can easily notice that how the Error is dropping as we keep on adding more and more trees and average them."})
+  
+
+  
+
+  
+  
+  
+  
+  
+  #############################
+  
+  
+  
+  
+  
+  
+  output$tbD1 <- renderUI({
+      tabsetPanel(
+        tabPanel("Data",tags$br(),tags$br(),textOutput("demodatatext"),tags$head(tags$style("#demodatatext{color: blue;font-size: 16px;font-style: bold;}")), 
+                                  tags$br(),textOutput("demodatatext1"),tags$head(tags$style("#demodatatext1{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext2"),tags$head(tags$style("#demodatatext2{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext3"),tags$head(tags$style("#demodatatext3{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext4"),tags$head(tags$style("#demodatatext4{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext5"),tags$head(tags$style("#demodatatext5{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext6"),tags$head(tags$style("#demodatatext6{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext7"),tags$head(tags$style("#demodatatext7{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext8"),tags$head(tags$style("#demodatatext8{color: green;font-size: 16px;font-style: bold;}")),
+                                            textOutput("demodatatext9"),tags$head(tags$style("#demodatatext9{color: green;font-size: 16px;font-style: bold;}")),
+                                  tags$br() ,tags$br(),dataTableOutput("demotable1")),
+        
+        tabPanel("Summary", tags$br(), textOutput("factext1") , tags$br(),uiOutput("dsumdropdown"),tags$br(),verbatimTextOutput ("dsumm"), tags$br(), plotOutput("dsummplot"), tags$br(), 
+                 htmlOutput("factext2"),tags$head(tags$style("#factext2{color: brown;font-size: 16px;}"))),
+        
+        
+        tabPanel("Contigency tables", tags$br(),textOutput("factext3") , tags$br(),uiOutput("dcondropvar1"),tags$br(),uiOutput("dcondropvar2"),tags$br(),verbatimTextOutput("dconTable"), tags$br(),
+                 htmlOutput("factext4"),tags$head(tags$style("#factext4{color: brown;font-size: 16px;}"))),
+        
+        
+        tabPanel("Logistic Model", tags$br(),
+                 textOutput("dbin1"),tags$br(), tags$head(tags$style("#dbin1{color: black;font-size: 16px;}")),
+                 textOutput("dbin2"), tags$br(), tags$head(tags$style("#dbin2{color: blue;font-size: 16px;}")),
+                 textOutput("dbin3"), tags$br(), tags$head(tags$style("#dbin3{color: black;font-size: 16px;}")),
+                 textOutput("dbin4"), tags$br(), tags$head(tags$style("#dbin4{color: brown;font-size: 16px;font-weight:bold}")),
+                 textOutput("dbin5"), tags$br(), tags$head(tags$style("#dbin5{color: blue;font-size: 16px; font-weight:bold}")),
+                 uiOutput("dbinmoddisplay"),uiOutput("dbtnbinmodel"),
+                 
+                 tags$br(),verbatimTextOutput("dbinmodel"),textOutput("factext5"),tags$head(tags$style("#factext5{color: brown;font-size: 16px;}")),
+                 
+                 tags$br(),verbatimTextOutput("dbestbinmodel"), textOutput("factext6"),tags$head(tags$style("#factext6{color: brown;font-size: 16px;}")),
+                 
+                 tags$br(),verbatimTextOutput("dCIbestbinmodel"), textOutput("factext7"),tags$head(tags$style("#factext7{color: brown;font-size: 16px;}")),
+                 
+                 tags$br(),verbatimTextOutput("dORbestbinmodel"), textOutput("factext8"),tags$head(tags$style("#factext8{color: brown;font-size: 16px;}")),
+                 
+                 tags$br(),uiOutput("dresdropdown"), 
+                 
+                 tags$br(),plotOutput("dROCCurve"),textOutput("factext9"),tags$head(tags$style("#factext9{color: brown;font-size: 16px;}")),
+                 tags$br(),verbatimTextOutput("auc"),textOutput("factext10"),tags$head(tags$style("#factext10{color: brown;font-size: 16px;}"))),
+        
+        
+        tabPanel("Random Forest Model",tags$br(),
+                 textOutput("dRF1"),tags$br(), tags$head(tags$style("#dRF1{color: black;font-size: 16px;}")),
+                 textOutput("dRF2"), tags$br(), tags$head(tags$style("#dRF2{color: blue;font-size: 16px;}")),
+                 textOutput("dRF3"), tags$br(), tags$head(tags$style("#dRF3{color: black;font-size: 16px;}")),
+                 textOutput("dRF4"), tags$br(), tags$head(tags$style("#dRF4{color: brown;font-size: 16px;font-weight:bold}")),
+                 textOutput("dRF5"), tags$br(), tags$head(tags$style("#dRF5{color: blue;font-size: 16px; font-weight:bold}")),
+                 uiOutput("dRFmoddisplay"),uiOutput("dbtnRFmodel"),
+                 
+                 tags$br(),verbatimTextOutput("dRFmodel"),textOutput("factext11"),tags$head(tags$style("#factext11{color: brown;font-size: 16px;}")),verbatimTextOutput("dRFmodelsummary"),
+                 
+                tags$br(),verbatimTextOutput("dvarImportance"),textOutput("factext12"),tags$head(tags$style("#factext12{color: brown;font-size: 16px;}")),
+                 
+                tags$br(),plotOutput("derrorplot"),textOutput("factext13"),tags$head(tags$style("#factext13{color: brown;font-size: 16px;}"))),
+        
+       
+        
+        tabPanel("LASSO Model", tags$br(),textOutput("dmainText1"),tags$head(tags$style("#dmainText1{color: brown;font-size: 16px;font-style: bold;}")),
+                 tags$br(),textOutput("dmainText2"),tags$head(tags$style("#dmainText2{color: blue;font-size: 16px;font-style: bold;}")),
+                 tags$br(),textOutput("dmainText3"),tags$head(tags$style("#dmainText3{color: green;font-size: 16px;font-style: bold;}")),
+                 tags$br(),textOutput("dmainText4"),tags$head(tags$style("#dmainText4{color: brown;font-size: 16px;font-weight: bold;}")),
+                 tags$br(),textOutput("dmainText5"),tags$head(tags$style("#dmainText5{color: black;font-size: 14px;font-weight: bold;}")),
+                 uiOutput("dlass.spe"),uiOutput("dlass.col"), dataTableOutput("dmytable"),uiOutput("dbtnlassmodel"),
+                 textOutput("dlasT1"),tags$head(tags$style("#dlasT1{color: brown;font-size: 16px;font-style: bold;}")),
+                 textOutput("dlasT2"),tags$head(tags$style("#dlasT2{color: black;font-size: 14px;font-style: bold;}")),
+                 plotOutput("dcof.lambda"),textOutput("dlasT3"),tags$head(tags$style("#dlasT3{color: brown;font-size: 16px;font-style: bold;}")),
+                 plotOutput("ddev.lambda"),textOutput("dlasT4"),tags$head(tags$style("#dlasT4{color: brown;font-size: 16px;font-style: bold;}")),
+                 plotOutput("dMSE.lambda") ,textOutput("dlasT5"),tags$head(tags$style("#dlasT5{color: brown;font-size: 16px;font-style: bold;}")),
+                 textOutput("dlasT6"),tags$head(tags$style("#dlasT6{color: black;font-size: 14px;font-style: bold;}")),
+                 verbatimTextOutput("dbest.lam"), textOutput("dlasT7"),tags$head(tags$style("#dlasT7{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("dbest.mod"),textOutput("dlasT8"),tags$head(tags$style("#dlasT8{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("dlassmodel"),textOutput("dlasT9"),tags$head(tags$style("#dlasT9{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("dcoef"))
+        
+      )
+  })
+  
+  
+  ######## Group Comparison Test
+  
+  #### Create Dataset ####
+
+  
+  demodata2 <- read.csv("https://raw.githubusercontent.com/ShamaliSujeewa/SDA/main/concentrationdata.csv")
+  
+  
+  
+  output$demotable2<- DT::renderDataTable(demodata2 , options=list(scrollX=TRUE))
+  
+  output$demodata2text <- renderText({"This demonstration dataset is collected from endemic and non-endemeic areas, and the dataset includes 4 variables and 108 observations. The objective of this analysis is to find whether the concentration of water metals is different between endemic and non-endemic areas. Description of the variables are given below:"})
+  output$demodata2text1 <- renderText({"Area:- The area (endemic or non-endemic) where the water samples collected"})
+  output$demodata2text2 <- renderText({"Pb:- Pb concentration"})
+  output$demodata2text3 <- renderText({"Cd:- Cd concentration"})
+  output$demodata2text4 <- renderText({"As:- As concentration"})
+  
+  
+  ###### 1. Summary Statistics
+  
+  
+  
+  #drop down list to select the variable name
+  output$dsumdropdownWMA <- renderUI({ 
+    selectInput("ddropdownWMA1","Select the variable",sort(as.character(colnames(demodata2))))
+    
+  })
+  
+  
+  #display summary according to the selected variable
+  output$dsumWMA <- renderPrint({
+    Variable <- demodata2
+    Variable <- Variable[,input$ddropdownWMA1]
+    if(class(Variable)=="character")
+    {
+      table(Variable)
+    }
+    else
+    {
+      summary(Variable)
+    }
+    
+  })
+  
+  output$dsummplotWMA <- renderPlot({
+    Variable <- demodata2
+    Variable <- Variable[,input$ddropdownWMA1]
+    
+    if(class(Variable)=="numeric")
+    {
+      hist(Variable, main="Histogram of selected factor")
+    }
+    else
+    {
+      pie(table(Variable),main="Pie chart of selected factor")
+    }
+    
+  })
+  
+  
+  output$dsummboxplotWMA <- renderPlot({
+    Variable <- demodata2
+    Variable <- Variable[,input$ddropdownWMA1]
+    if(class(Variable)=="numeric")
+    {
+      boxplot(Variable, main="Box plot of selected factor")
+    }
+  })
+  
+  
+  
+  
+  #Statistics of metal concentration by locations
+  #drop down list to select the variable name 
+  output$dmetalvar <- renderUI({ 
+    selectInput("ddbmetalvar","Select a metal:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dgroupvar <- renderUI({ 
+    selectInput("ddbgroupvar","Select a location (Group) variable:", choices="Area")
+    
+  })
+  
+  #drop down list to select the static
+  output$dstatic <- renderUI({ 
+    selectInput("ddbstatic","Select the statistic:", c("min","max","mean","median","sd","count"))
+    
+  })
+  
+  output$dstatbylocation <- renderPrint({
+    Variable <- demodata2
+    Variable <- Variable[,input$ddbmetalvar]
+    
+    Variable2 <- demodata2
+    Variable2 <- Variable2[,input$ddbgroupvar]
+    
+    tapply(Variable,Variable2,input$ddbstatic)
+  })
+  
+  
+  
+  
+  #drop down list to select the variable name 
+  output$dmetalvar2 <- renderUI({ 
+    selectInput("ddbmetalvar2","Select a metal:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dgroupvar2 <- renderUI({ 
+    selectInput("ddbgroupvar2","Select a location (Group) variable:", choices="Area")
+    
+  })
+  
+  
+  
+  
+  output$dboxplot<-renderPlot({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar2]
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar2]
+    
+    
+    ggplot(data, aes(x = Location, y = Concentration, fill = Location)) +
+      geom_boxplot() +
+      geom_jitter(shape = 15,
+                  color = "steelblue",
+                  position = position_jitter(0.21)) +
+      theme_classic()
+  })
+  
+  
+  
+  
+  
+  #drop down list to select the variable name 
+  output$dmetalvar3 <- renderUI({ 
+    selectInput("ddbmetalvar3","Select a metal:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dgroupvar3 <- renderUI({ 
+    selectInput("ddbgroupvar3","Select a location (Group) variable:", choices="Area")
+    
+  })
+  
+  
+  
+  
+  output$dmeanplot<-renderPlot({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- as.vector(Concentration[,input$ddbmetalvar3])
+    
+    
+    Location <- demodata2
+    Location <- as.vector(Location[,input$ddbgroupvar3])
+    
+    
+    plotmeans(Concentration ~ Location, data = data, 
+              xlab = "Location", ylab = "concentration",
+              main="Mean Plot with 95% CI") 
+  })
+  
+  
+  #### 2. ANOVA test 
+  
+  
+  #drop down list to select the variable name 
+  output$dmetalvar4 <- renderUI({ 
+    selectInput("ddbmetalvar4","Select a metal:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dgroupvar4 <- renderUI({ 
+    selectInput("ddbgroupvar4","Select a location (Group) variable:", choices="Area")
+    
+  })
+  
+  
+  output$danovatest<-renderPrint({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    summary(anova_one_way)
+  })
+  
+  
+  
+  #############ANOVA Test Assumptions#########
+  
+  
+  output$dtext <- renderText({"Please make sure to perform ANOVA test before checking the assumptions."
+  })
+  
+  output$ddiagnosticplot1 <- renderPlot({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    plot(anova_one_way, 1)
+  })
+  
+  
+  output$dlevenetest<-renderPrint({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar4]
+    
+    leveneTest(Concentration~Location, data = data)
+    
+  })
+  
+  
+  
+  
+  output$ddensityplot<- renderPlot({
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    ggdensity(Concentration, 
+              main = "Density plot of Selected Metal concentration",
+              xlab = "Selected Metal concentration")
+  })
+  
+  
+  output$dqqplot<- renderPlot({
+    
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    
+    
+    par(mfrow=c(1,2))
+    plot(anova_one_way,2)
+    ggqqplot(Concentration)
+  })
+  
+  
+  
+  
+  output$dshapirotest<-renderPrint({
+    
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar4]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    
+    # Extract the residuals
+    aov_residuals <- residuals(object = anova_one_way )
+    # Run Shapiro-Wilk test
+    shapiro.test(x = aov_residuals )
+    
+  })
+  
+  
+  
+  
+  #############Kruskal-Wallis rank sum test#########
+  
+  #drop down list to select the variable name 
+  output$dmetalvar5 <- renderUI({ 
+    selectInput("ddbmetalvar5","Select a metal:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dgroupvar5 <- renderUI({ 
+    selectInput("ddbgroupvar5","Select a location (Group) variable:", choices="Area")
+    
+  })
+  
+  
+  output$dkruskalwallistest<-renderPrint({
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar5]
+    
+    
+    Location <- demodata2
+    Location <- Location[,input$ddbgroupvar5]
+    
+    kruskal.test(Concentration~Location, data = data)
+    
+  })
+  
+  
+
+  
+  #############t test#########
+  
+  #drop down list to select the variable name 
+  output$dmetalvar6 <- renderUI({ 
+    selectInput("ddbmetalvar6","Select a metal concentration:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dmuvalue <- renderUI({ 
+    textAreaInput("dmuvalue", "Enter WHO recomended limit for selected metal concentration. Ex: 0.3","WHO recomended value" , width = "500px")
+    
+  })
+  
+  
+  
+  output$dbtnZT <- renderUI({ 
+    actionButton(inputId="dbtnZT", label="Submit Values", value=FALSE)
+    
+  })
+  
+  dbtn<-eventReactive(input$dbtnZT,demodata2)
+  
+  
+  output$dztest<-renderPrint({dbtn()
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar6]
+    
+    
+    t.test(Concentration, mu = as.double(input$dmuvalue) , alternative = "greater")
+    
+  })
+  
+  
+ 
+  #############Wilcoxon Signed rank test#########
+  
+  #drop down list to select the variable name 
+  output$dmetalvar7 <- renderUI({ 
+    selectInput("ddbmetalvar7","Select a metal concentration:", choices = list("As","Cd","Pb"))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$dmuvalue2 <- renderUI({ 
+    textAreaInput("dmuvalue2", "Enter WHO recomended limit for selected metal concentration. Ex: 0.3","WHO recomended value" , width = "500px")
+    
+  })
+  
+  
+  
+  output$dbtnWT <- renderUI({ 
+    actionButton(inputId="dbtnWT", label="Submit Values", value=FALSE)
+    
+  })
+  
+  dbtn2<-eventReactive(input$dbtnWT,data5())
+  
+  
+  output$dWtest<-renderPrint({dbtn2()
+    data<-demodata2
+    
+    Concentration <- demodata2
+    Concentration <- Concentration[,input$ddbmetalvar7]
+    
+    
+    wilcox.test(Concentration, mu = as.double(input$dmuvalue2) , alternative = "greater")
+    
+  })
+  
+  
+
+  
+  #########################
+  
+  
+  output$tbD2 <- renderUI({
+    tabsetPanel(
+      tabPanel("Data",tags$br(),tags$br(),textOutput("demodata2text"),tags$head(tags$style("#demodata2text{color: blue;font-size: 16px;font-style: bold;}")), 
+               tags$br(),textOutput("demodata2text1"),tags$head(tags$style("#demodata2text1{color: green;font-size: 16px;font-style: bold;}")),
+               textOutput("demodata2text2"),tags$head(tags$style("#demodata2text2{color: green;font-size: 16px;font-style: bold;}")),
+               textOutput("demodata2text3"),tags$head(tags$style("#demodata2text3{color: green;font-size: 16px;font-style: bold;}")),
+               textOutput("demodata2text4"),tags$head(tags$style("#demodata2text4{color: green;font-size: 16px;font-style: bold;}")),
+               tags$br() ,tags$br(),dataTableOutput("demotable2")),
+      
+      
+      
+      
+      navbarMenu("Summary",
+      tabPanel("Summary Statistics", tags$br(),
+               
+               tags$span(align="justify",style="color:black;font-size: 16px",
+                p("The summary statistics of heavy metal concentrations in water samples taken from different locations 
+                 can be observed according to the location. The box plots and mean plots are given for numerical variables, and a pie chart is given for categorical variables.")),
+               
+               
+               uiOutput("dsumdropdownWMA"), verbatimTextOutput("dsumWMA"), plotOutput("dsummplotWMA"), plotOutput("dsummboxplotWMA")),
+      tabPanel("Statistics of metal concentration by locations ",tags$br(), uiOutput("dmetalvar"), uiOutput("dgroupvar"),uiOutput("dstatic"),verbatimTextOutput("dstatbylocation")),
+      tabPanel("Box Plots of metal concentration by locations", tags$br(),uiOutput("dmetalvar2"), uiOutput("dgroupvar2"),plotOutput("dboxplot")),
+      tabPanel("Mean Plot", tags$br(), uiOutput("dmetalvar3"), uiOutput("dgroupvar3"),plotOutput("dmeanplot"))),
+      
+      
+      
+      
+      ###ANOVA###
+      
+      
+      navbarMenu("Group Comparison Test",
+                 
+      tabPanel("ANOVA Test", tags$br(),
+               
+               tags$span(align="justify",style="color:black;font-size: 16px",
+                p("The objective of the ANOVA test is to analyse whether there are any significant differences between water metal concentrations among locations."), 
+                tags$br(),
+                p(style="color:green", "If your data violates the assumptions of the ANOVA test, a non-parametric test (Kruskal-Wallis rank sum test) can be 
+                  applied as an alternative method.")),
+               
+               
+               uiOutput("dmetalvar4"),uiOutput("dgroupvar4"), verbatimTextOutput("danovatest")),
+      
+      
+      tabPanel("ANOVA Test Assumptions", tags$br(),
+               
+               tags$span(align="justify",style="color:black;font-size: 16px",
+                         p("The ANOVA test assumes that the data are normally distributed, and the variance across groups are homogeneous."),
+                         
+                         p(style="color:brown;","1. Check the homogeneity of variance assumption using Diagnostic plots and Levene’s test"),
+                         p(style="color:brown;", "2. Check the normality assumption using Density plot, Q-Q plot  and Shapiro-Wilk’s test"),
+                         tags$br()
+                         ),
+               
+               
+               
+               textOutput("dtext"),tags$head(tags$style("#dtext{color: blue;font-size: 18px;font-style: bold;}")), tags$br(),
+      
+               tabsetPanel( navbarMenu("Homogeneity of variance assumption",
+                  tabPanel(" Levene’s test", verbatimTextOutput("dlevenetest")),
+                  tabPanel("Diagnostic Plot", plotOutput("ddiagnosticplot1"))
+                  )
+      ),
+      tabsetPanel( navbarMenu( "Normality assumption",
+                  tabPanel(" Q-Q Plot", plotOutput("dqqplot")),
+                  tabPanel("Density Plot", plotOutput("ddensityplot")),
+                  tabPanel(" Shapiro-Wilk’s test", verbatimTextOutput("dshapirotest"))
+                              )
+                )
+      ),
+      
+      
+      
+      tabPanel("Kruskal-Wallis rank sum test", tags$br(),
+               
+               tags$span(align="justify",style="color:black;font-size: 16px",
+                        
+                         p("If your data violates the assumption of the ANOVA test, the non-parametric test of Kruskal-Wallis rank sum test can be 
+                           applied as an alternative method.")),
+               
+              
+               uiOutput("dmetalvar5"),uiOutput("dgroupvar5"), verbatimTextOutput("dkruskalwallistest"))
+    ),
+    
+    
+    
+    
+    
+    navbarMenu("Hypothesis Test",
+    tabPanel("t-test", tags$br(),
+             
+             tags$span(align="justify",style="color:black;font-size: 16px",
+             p("Here, we perform a hypothesis test to compare the concentrations of heave metals 
+               in water with the WHO recomended limit. The t-test can be used if data are not-normal,
+               or the non-parametric test of Wilcoxon Signed rank test can be used otherwise.")), 
+             tags$br(),
+             
+             
+             
+             uiOutput("dmetalvar6"),uiOutput("dmuvalue"), uiOutput("dbtnZT"),verbatimTextOutput("dztest")),
+    tabPanel("Wilcoxon Signed rank test", tags$br(),uiOutput("dmetalvar7"),uiOutput("dmuvalue2"), uiOutput("dbtnWT"),verbatimTextOutput("dWtest"))
+    )
+      
+      
+  )
+    
+  })
+  
+  
+  
+  
+  
+  ################################################ PRELIMINARY DATA ANALYSIS #######################################################
+  
+  
+  data1 <-reactive({
+    file1 <- input$file1
+    if(is.null(file1)){return()}
+    read.table(file=file1$datapath, sep=input$sep1, header=input$header1, stringsAsFactors = input$stringAsFactors1)
+  })
+  
+  
+  
+  #this reactive output contans the summary of the dataset (path,size,type)
+  output$filedf1 <- renderTable({
+    if(is.null(data1())){return()}
+    input$file1
+  })
+  
+  #this reactive output contains the dataset and display the dataset in the table format
+  output$table1<- DT::renderDataTable(data1() , options=list(scrollX=TRUE))
+  ##################
+  
+  
+  
+  #drop down list to select the variable name
+  output$sumdropdown <- renderUI({ 
+    selectInput("dropdown1","Select the variable you need to see the summary:",sort(as.character(colnames(data1()))))
+    
+  })
+  
+  
+  #display summary according to the selected variable
+  output$summ <- renderPrint({
+    Variable <- data1()
+    Variable <- Variable[,input$dropdown1]
+    if(class(Variable)=="integer")
+    {
+      summary(Variable)
+    }
+    else
+    {
+      table(Variable)
+    }
+    
+  })
+  
+  output$summplot <- renderPlot({
+    Variable <- data1()
+    Variable <- Variable[,input$dropdown1]
+    if(class(Variable)=="integer")
+    {
+      hist(Variable)
+    }
+    else
+    {
+      pie(table(Variable))
+    }
+    
+  })
+  
+  
+  #drop down list to select the contigency table variable name 1
+  output$condropvar1 <- renderUI({ 
+    selectInput("convar1","Select the first variable:", sort(as.character(colnames(data1()))))
+    
+  })
+  
+  
+  #drop down list to select the contingency table variable name 2
+  output$condropvar2 <- renderUI({ 
+    selectInput("convar2","Select the second variable:", sort(as.character(colnames(data1()))))
+    
+  })
+  
+  
+  
+  
+  #display contigency table
+  output$conTable <- renderPrint({
+    df <- data1()
+    
+    variable_1 <- df[,input$convar1]
+    variable_2 <- df[,input$convar2]
+    
+    table(variable_1 , variable_2)
+    
+    
+  })
+  
+  
+  #############################
+  
+  
+  
+  #The following rederUI is used to dynamically generate the tabsets when the file is loaded. Until the file is loaded
+  output$tb1 <- renderUI({
+    if(is.null(data1())){return()}
+    else
+      tabsetPanel(
+        tabPanel("Data",dataTableOutput("table1")),
+        tabPanel("Summary", tags$br(),uiOutput("sumdropdown"),tags$br(),verbatimTextOutput ("summ"), tags$br(), plotOutput("summplot")),
+        tabPanel("Contigency tables", tags$br(),uiOutput("condropvar1"),tags$br(),uiOutput("condropvar2"),tags$br(),verbatimTextOutput("conTable"))
+      )
+  })
+  
+  
+  
+  
+  ############################################ RANDOM FOREST Model Analysis ###########################################################
+  
+  #Read file
+  data2 <-reactive({
+    file2 <- input$file2
+    if(is.null(file2)){return(NULL)}
+    read.table(file=file2$datapath, sep=input$sep2, header=input$header2, stringsAsFactors = input$stringAsFactors2)
+  })
+  
+  output$filedf2 <- renderTable({
+    if(is.null(data2())){return()}
+    input$file
+  })
+  
+  
+  output$RFmoddata<- DT::renderDataTable(data2(), options=list(scrollX= TRUE))
+  
+  
+  output$RF1 <- renderText({"Type Your Model as follows:"})
+  output$RF2 <- renderText({"Dependent Variable ~ Factor1 + Factor2 + Factor3"})
+  
+  
+  
+  output$RFmoddisplay <- renderUI({ 
+    textAreaInput("RFmod", "Random Forest Model","Add Model" , width = "1000px")
+    
+  })
+  
+  
+  output$btnRFmodel <- renderUI({ 
+    actionButton(inputId="btnRFmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  b2<-eventReactive(input$btnRFmod,data2())
+  
+  output$RFmodel <-renderPrint({b2()
+    set.seed(17)
+    df2<-data2()
+    output.forest <- randomForest::randomForest(as.formula(input$RFmod), data=df2 ,importance=TRUE)
+    print(output.forest) # Summary of Full model
+    
+  })
+  
+  
+  # Random Forest Model Summary
+  output$RFmodelsummary <-renderPrint({b2()
+    set.seed(17)
+    df2<-data2()
+    output.forest <- randomForest::randomForest(as.formula(input$RFmod), data=df2 ,importance=TRUE)
+    summary(output.forest) 
+    
+  })
+  
+  
+  # Importance of the variables
+  output$varImportance <-renderPrint({b2()
+    set.seed(17)
+    df2<-data2()
+    output.forest <- randomForest::randomForest(as.formula(input$RFmod), data=df2 ,importance=TRUE)
+    round(importance(output.forest,type = 2),2) 
+    
+  })
+  
+  # Error Vs Number of Trees graph
+  output$errorplot <-renderPlot({b2()
+    set.seed(17)
+    df2<-data2()
+    output.forest <- randomForest::randomForest(as.formula(input$RFmod), data=df2 ,importance=TRUE)
+    plot(output.forest) 
+    
+  })
+  
+  
+  
+  #Tab panel
+  output$tb2 <- renderUI({
+    if(is.null(data2())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Data",dataTableOutput("RFmoddata")),
+        
+        tabPanel("Random Forest Model",textOutput("RF1"),tags$br(), textOutput("RF2"), tags$br(), tags$head(tags$style("#RF2{color: blue;font-size: 14px;}")),
+                 uiOutput("RFmoddisplay"),uiOutput("btnRFmodel"),verbatimTextOutput("RFmodel")),
+        tabPanel("Model Summary",verbatimTextOutput("RFmodelsummary")),
+        tabPanel("Importance of the Variables",verbatimTextOutput("varImportance")),
+        tabPanel("Error Vs. Number of Trees Graph", plotOutput("errorplot"))
+        
+      )
+  })
+  
+  
+  
+  
+  
+  
+  ############################################ BINARY LOGISTIC MODEL Analysis ###########################################################
+  
+  #Read file
+  data3 <-reactive({
+    file3 <- input$file3
+    if(is.null(file3)){return(NULL)}
+    read.table(file=file3$datapath, sep=input$sep3, header=input$header3, stringsAsFactors = input$stringAsFactors3)
+  })
+  
+  output$filedf3 <- renderTable({
+    if(is.null(data3())){return()}
+    input$file
+  })
+  
+  
+  output$mod<- DT::renderDataTable(data3(), options=list(scrollX= TRUE))
+  
+  
+  output$bin1 <- renderText({"Type Your Model as follows:"})
+  output$bin2 <- renderText({"Dependent Variable ~ Factor1 + Factor2 + Factor3"})
+  
+  
+  
+  output$binmoddisplay <- renderUI({ 
+    textAreaInput("binmod", "Binary Logistic Model","Add Model" , width = "1000px")
+    
+  })
+  
+  
+  output$btnbinmodel <- renderUI({ 
+    actionButton(inputId="btnbinmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  b3<-eventReactive(input$btnbinmod,data3())
+  output$binmodel <-renderPrint({b3()
+    
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    summary(fulmod) # Summary of Full model
+    
+  })
+  
+  
+  
+  b3<-eventReactive(input$btnbinmod,data3())
+  output$bestbinmodel <-renderPrint({b3()
+    
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    backwards = step(fulmod)# Summary of best model
+    summary(backwards)
+  })
+  
+  
+  b3<-eventReactive(input$btnbinmod,data3())
+  output$CIbestbinmodel <-renderPrint({b3()
+    
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    confint(step(fulmod))
+  })
+  
+  
+  b3<-eventReactive(input$btnbinmod,data3())
+  output$ORbestbinmodel <-renderPrint({b3()
+    
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    exp(coefficients(step(fulmod)))
+  })
+  
+  
+  
+  output$bintext <- renderText({"Select Response Variable, It shoud be matched with the response variable of fitted model"})
+  
+  
+  
+  output$resdropdown <- renderUI({ 
+    selectInput("res","Response variable: ", sort(as.character(colnames(data3()))))
+    
+  })
+  
+  
+  b3<-eventReactive(input$btnbinmod,data3())
+  output$ROCCurve<-renderPlot({b3()
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    prob=predict(step(fulmod),type=c("response"))
+    pred <- prediction(prob, df3[,input$res] )
+    roc = performance(pred, "tpr", "fpr")
+    windowsFonts(A = windowsFont("Times New Roman"))
+    plot(roc, colorize=T, lwd=2, family="A", cex.lab=2, cex.axis=2)
+    lines(x=c(0, 1), y=c(0, 1), col="grey", lty=2)
+    
+  })
+  
+  
+  
+  
+  output$aauc<-renderPrint({b3()
+    
+    df3<-data3()
+    fulmod <- glm(input$binmod, data=df3 ,family = binomial)
+    prob=predict(step(fulmod),type=c("response"))
+    pred <- prediction(prob, df3[,input$res] )
+    
+    auc = performance(pred, "auc")
+    auc = unlist(auc@y.values)
+    
+    print(auc)  #
+  })
+  
+  
+  
+  
+  
+  #Tab panel
+  output$tb3 <- renderUI({
+    if(is.null(data3())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Data",dataTableOutput("mod")),
+        
+        tabPanel("Logistic Model",textOutput("bin1"),tags$br(),textOutput("bin2"),tags$br(),tags$head(tags$style("#bin2{color: blue;font-size: 14px;}")),
+                 uiOutput("binmoddisplay"),uiOutput("btnbinmodel"),verbatimTextOutput("binmodel")),
+        navbarMenu( "Best Model",
+                    tabPanel("Backward Elimination Method",verbatimTextOutput("bestbinmodel")),
+                    tabPanel("CI for each Best Model Coefficients",verbatimTextOutput("CIbestbinmodel")),
+                    tabPanel("Odds Ratios of Best Model Coefficients",verbatimTextOutput("ORbestbinmodel"))),
+        tabPanel("ROC Curve", tags$br(),textOutput("bintext") ,tags$br(),uiOutput("resdropdown"), plotOutput("ROCCurve"), tags$br(),verbatimTextOutput("aauc") )
+        
+      )
+  })
+  
+  
+  
+  
+  
+  ########## LASSO MODEL#############
+  
+  
+  #Read file
+  data4 <-reactive({
+    file4 <- input$file4
+    if(is.null(file4)){return(NULL)}
+    read.table(file=file4$datapath, sep=input$sep4, header=input$header4, stringsAsFactors = input$stringAsFactors4)
+  })
+  
+  output$filedf4 <- renderTable({
+    if(is.null(data4())){return()}
+    input$file
+  })
+  
+  
+  output$lassomod<- DT::renderDataTable(data4(), options=list(scrollX= TRUE))
+  
+  
+  output$mainText1<-renderText({
+    "Please make sure to upload the Categorical variables after definning using numerical values. Lasso model will fit only for numerical values."
+  })
+  
+  output$mainText2<-renderText({
+    "Example:  Categorical Variable :- Gender"
+  })
+  
+  output$mainText3<-renderText({
+    "This can be define as Female - 0  Male - 1 as a design variable "
+  })
+  
+  
+  
+  output$lass.col <- renderUI({ 
+    lass.data<-data4()
+    if(is.null(lass.data)) return(NULL)
+    
+    
+    vchoices<-1:ncol(lass.data)
+    names(vchoices)<-names(lass.data)
+    checkboxGroupInput("columns","Select factors",choices = vchoices,inline = T)
+  })
+  
+  
+  
+  observeEvent(input$columns,{
+    lass.data<-data4()
+    cols<-as.double(input$columns)
+    if(length(input$columns)==1){
+      df4<-data.frame(lass.data[,cols])
+      names(df4)<-names(lass.data)[cols]
+      output$mytable=renderDataTable(data.frame(df4))
+    }else{
+      output$mytable = renderDataTable(data.frame(lass.data[,cols]))
+    }
+  })
+  
+  
+  
+  
+  output$lass.spe <- renderUI({ 
+    lass.data<-data4()
+    if(is.null(lass.data)) return(NULL)
+    
+    
+    spechoices<-1:ncol(lass.data)
+    names(spechoices)<-names(lass.data)
+    checkboxGroupInput("spe","Select response (Binary) variable. Ex: Disease Yes - 1  No - 0",choices = spechoices,inline = T)
+  })
+  
+  
+  
+  observeEvent(input$spe,{
+    lass.spedata<-data4()
+    cols<-as.double(input$spe)
+    if(length(input$spe)==1){
+      s.df<-data.frame(lass.spedata[,cols])
+      names(s.df)<-names(lass.spedata)[cols]
+      output$spetable=renderDataTable(data.frame(s.df))
+    }else{
+      output$spetable = renderDataTable(data.frame(lass.spedata[,cols]))
+    }
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  output$btnlassmodel <- renderUI({ 
+    actionButton(inputId="btnlassmod", label="Submit Model", value=FALSE)
+    
+  })
+  
+  
+  b4<-eventReactive(input$btnlassmod,data4())
+  
+  output$lasT1<-renderText({b4()
+    "Coefficients against the 100 of lambda values"
+  })
+  
+  
+  output$lasT2<-renderText({b4()
+    "It makes a plot as a function of log of lambda, and is plotting the coefficients. This develops a whole part of models on a grid of values of lambda (about 100 values of lambda)."
+  })
+  
+  
+  
+  
+  output$cof.lambda<-renderPlot({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    plot(fulmod,xvar="lambda",label=TRUE)
+  })
+  
+  
+  
+  output$lasT3<-renderText({b4()
+    "Coefficients against the Fraction Deviance Explained"
+  })
+  
+  
+  
+  
+  output$dev.lambda<-renderPlot({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    plot(fulmod,xvar="dev",label=TRUE)
+  })
+  
+  
+  
+  
+  output$lasT4<-renderText({b4()
+    "Mean-Square Error of the model for each log value of lambda"
+  })
+  
+  
+  output$MSE.lambda<-renderPlot({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    plot(lasso.cv.out)
+  })
+  
+  
+  output$lasT5<-renderText({b4()
+    "Best lambda value"
+  })
+  
+  
+  
+  output$lasT6<-renderText({b4()
+    "It would be better to use cross-validation to choose lambda. We can do this using cv.glmnet. By default, the function performs ten-fold cross-validation:"
+  })
+  
+  
+  
+  output$best.lam<-renderPrint({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    best.lambda<-lasso.cv.out$lambda.min
+    print(best.lambda)
+  })
+  
+  
+  
+  output$lasT7<-renderText({b4()
+    "Best model coefficients"
+  })
+  
+  
+  
+  
+  output$best.mod<-renderPrint({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    lasso.cv.out<-cv.glmnet(cx,cy, alpha=1)
+    best.lambda<-lasso.cv.out$lambda.min
+    predict(fulmod,s=best.lambda, type="coefficients")
+  })
+  
+  
+  
+  output$lasT8<-renderText({b4()
+    "Summary of 100  of lambda models"
+  })
+  
+  
+  
+  
+  output$lassmodel <-renderPrint({b4()
+    set.seed(17)
+    lass.comdata<-data4()
+    xx<-as.numeric(input$columns)
+    x<-as.matrix(data.frame(lass.comdata[,xx]))
+    yy<-as.numeric(input$spe) 
+    y<-as.matrix(data.frame(lass.comdata[,yy])) 
+    
+    fulmod <- glmnet( x, y, alpha=0, family= "binomial")
+    print(fulmod) 
+    
+  })
+  
+  
+  
+  output$lasT9<-renderText({b4()
+    "Coefficients of 100  of lambda models"
+  })
+  
+  
+  
+  output$coef<-renderPrint({b4()
+    set.seed(17)
+    comdata<-data4()
+    xxx<-as.numeric(input$columns)
+    cx<-as.matrix(data.frame(comdata[,xxx]))
+    yyy<-as.numeric(input$spe) 
+    cy<-as.matrix(data.frame(comdata[,yyy])) 
+    
+    fulmod <- glmnet( cx, cy, alpha=0, family= "binomial")
+    predict(fulmod, type="coefficients")
+  })
+  
+  
+  
+  
+  
+  
+  #Tab panel
+  output$tb4 <- renderUI({
+    if(is.null(data4())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Data",dataTableOutput("lassomod")),
+        
+        tabPanel("LASSO Model", tags$br(),textOutput("mainText1"),tags$head(tags$style("#mainText1{color: brown;font-size: 16px;font-style: bold;}")),
+                 tags$br(),textOutput("mainText2"),tags$head(tags$style("#mainText2{color: blue;font-size: 16px;font-style: bold;}")),
+                 tags$br(),textOutput("mainText3"),tags$head(tags$style("#mainText3{color: green;font-size: 16px;font-style: bold;}")),
+                 tags$br(),uiOutput("lass.spe"),uiOutput("lass.col"),dataTableOutput("mytable"),uiOutput("btnlassmodel"),
+                 textOutput("lasT1"),tags$head(tags$style("#lasT1{color: brown;font-size: 16px;font-style: bold;}")),
+                 textOutput("lasT2"),tags$head(tags$style("#lasT2{color: black;font-size: 14px;font-style: bold;}")),
+                 plotOutput("cof.lambda"),textOutput("lasT3"),tags$head(tags$style("#lasT3{color: brown;font-size: 16px;font-style: bold;}")),
+                 plotOutput("dev.lambda"),textOutput("lasT4"),tags$head(tags$style("#lasT4{color: brown;font-size: 16px;font-style: bold;}")),
+                 plotOutput("MSE.lambda") ,textOutput("lasT5"),tags$head(tags$style("#lasT5{color: brown;font-size: 16px;font-style: bold;}")),
+                 textOutput("lasT6"),tags$head(tags$style("#lasT6{color: black;font-size: 14px;font-style: bold;}")),
+                 verbatimTextOutput("best.lam"), textOutput("lasT7"),tags$head(tags$style("#lasT7{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("best.mod"),textOutput("lasT8"),tags$head(tags$style("#lasT8{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("lassmodel"),textOutput("lasT9"),tags$head(tags$style("#lasT9{color: brown;font-size: 16px;font-style: bold;}")),
+                 verbatimTextOutput("coef"))
+        
+        
+        
+        
+      )
+  })
+  
+  
+  
+  
+  ##################################Water Metal Analysis##############################
+  
+  
+  ###############Import Data#############
+  #Read file
+  data5 <-reactive({
+    file5 <- input$file5
+    if(is.null(file5)){return(NULL)}
+    read.table(file=file5$datapath, sep=input$sep5, header=input$header5, stringsAsFactors = input$stringAsFactors5)
+  })
+  
+  output$filedf5 <- renderTable({
+    if(is.null(data5())){return()}
+    input$file
+  })
+  
+  
+  output$WMAdata<- DT::renderDataTable(data5(), options=list(scrollX= TRUE))
+  
+  output$tb5 <- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Data",dataTableOutput("WMAdata"))
+      )
+  })
+  
+  
+  #############Summary Statistics#########
+  #drop down list to select the variable name
+  output$sumdropdownWMA <- renderUI({ 
+    selectInput("dropdownWMA1","Select the variable you need to see the summary:",sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #display summary according to the selected variable
+  output$sumWMA <- renderPrint({
+    Variable <- data5()
+    Variable <- Variable[,input$dropdownWMA1]
+    if(class(Variable)=="character")
+    {
+      table(Variable)
+    }
+    else
+    {
+      summary(Variable)
+    }
+    
+  })
+  
+  output$summplotWMA <- renderPlot({
+    Variable <- data5()
+    Variable <- Variable[,input$dropdownWMA1]
+    
+    if(class(Variable)=="numeric")
+    {
+      hist(Variable, main="Histogram of selected factor")
+    }
+    else
+    {
+      pie(table(Variable),main="Pie chart of selected factor")
+    }
+    
+  })
+  
+  
+  output$summboxplotWMA <- renderPlot({
+    Variable <- data5()
+    Variable <- Variable[,input$dropdownWMA1]
+    if(class(Variable)=="numeric")
+    {
+      boxplot(Variable, main="Box plot of selected factor")
+    }
+  })
+  
+  
+  
+  
+  #Statistics of metal concentration by locations
+  #drop down list to select the variable name 
+  output$metalvar <- renderUI({ 
+    selectInput("dbmetalvar","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$groupvar <- renderUI({ 
+    selectInput("dbgroupvar","Select a Group (location) variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  #drop down list to select the static
+  output$static <- renderUI({ 
+    selectInput("dbstatic","Select the statistic:", c("min","max","mean","median","sd","count"))
+    
+  })
+  
+  output$statbylocation <- renderPrint({
+    Variable <- data5()
+    Variable <- Variable[,input$dbmetalvar]
+    
+    Variable2 <- data5()
+    Variable2 <- Variable2[,input$dbgroupvar]
+    
+    tapply(Variable,Variable2,input$dbstatic)
+  })
+  
+  
+  
+
+  #drop down list to select the variable name 
+  output$metalvar2 <- renderUI({ 
+    selectInput("dbmetalvar2","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$groupvar2 <- renderUI({ 
+    selectInput("dbgroupvar2","Select a Group (location) variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+   
+  
+  output$boxplot<-renderPlot({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar2]
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar2]
+    
+    
+    ggplot(data, aes(x = Location, y = Concentration, fill = Location)) +
+      geom_boxplot() +
+      geom_jitter(shape = 15,
+                  color = "steelblue",
+                  position = position_jitter(0.21)) +
+      theme_classic()
+  })
+  
+  
+  
+  
+  
+  #drop down list to select the variable name 
+  output$metalvar3 <- renderUI({ 
+    selectInput("dbmetalvar3","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$groupvar3 <- renderUI({ 
+    selectInput("dbgroupvar3","Select a Group (location) variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  
+  
+  output$meanplot<-renderPlot({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- as.vector(Concentration[,input$dbmetalvar3])
+    
+    
+    Location <- data5()
+    Location <- as.vector(Location[,input$dbgroupvar3])
+    
+    
+    plotmeans(Concentration ~ Location, data = data, 
+              xlab = "Location", ylab = "concentration",
+              main="Mean Plot with 95% CI") 
+  })
+  
+  
+  
+  output$tb6<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Summary Statistics", tags$br(),uiOutput("sumdropdownWMA"), verbatimTextOutput("sumWMA"), plotOutput("summplotWMA"), plotOutput("summboxplotWMA")),
+        tabPanel("Statistics of metal concentration by locations ",tags$br(), uiOutput("metalvar"), uiOutput("groupvar"),uiOutput("static"),verbatimTextOutput("statbylocation")),
+        tabPanel("Box Plots of metal concentration by locations", tags$br(),uiOutput("metalvar2"), uiOutput("groupvar2"),plotOutput("boxplot")),
+        tabPanel("Mean Plot", tags$br(), uiOutput("metalvar3"), uiOutput("groupvar3"),plotOutput("meanplot"))
+        )
+  })
+  
+  
+  #############ANOVA Test#########
+  
+  #drop down list to select the variable name 
+  output$metalvar4 <- renderUI({ 
+    selectInput("dbmetalvar4","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$groupvar4 <- renderUI({ 
+    selectInput("dbgroupvar4","Select a Group (location) variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  output$anovatest<-renderPrint({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    summary(anova_one_way)
+  })
+  
+  
+  
+  output$tb7<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("ANOVA Test", tags$br(),uiOutput("metalvar4"),uiOutput("groupvar4"), verbatimTextOutput("anovatest")))
+  })
+  
+  
+  
+  
+  
+  
+  #############ANOVA Test Assumptions#########
+  
+  output$diagnosticplot1 <- renderPlot({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    plot(anova_one_way, 1)
+  })
+  
+  
+  output$levenetest<-renderPrint({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar4]
+    
+    leveneTest(Concentration~Location, data = data)
+    
+  })
+ 
+  
+  
+  
+  output$densityplot<- renderPlot({
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    ggdensity(Concentration, 
+              main = "Density plot of the selected variable",
+              xlab = "Selected variable value")
+  })
+  
+  
+  output$qqplot<- renderPlot({
+    
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    
+    
+    par(mfrow=c(1,2))
+    plot(anova_one_way,2)
+    ggqqplot(Concentration)
+  })
+  
+  
+  
+  
+  output$shapirotest<-renderPrint({
+    
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar4]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar4]
+    
+    anova_one_way <- aov(Concentration~Location, data = data)
+    
+    # Extract the residuals
+    aov_residuals <- residuals(object = anova_one_way )
+    # Run Shapiro-Wilk test
+    shapiro.test(x = aov_residuals )
+    
+  })
+   
+  
+  
+  output$tb8<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        navbarMenu( "Homogeneity of variance assumption",
+                    tabPanel(" Levene’s test", verbatimTextOutput("levenetest")),
+                    tabPanel("Diagnostic Plot", plotOutput("diagnosticplot1"))
+              
+                  ),
+        navbarMenu( "Normality assumption",
+                    tabPanel(" Q-Q Plot", plotOutput("qqplot")),
+                    tabPanel("Density Plot", plotOutput("densityplot")),
+                    tabPanel(" Shapiro-Wilk’s test", verbatimTextOutput("shapirotest"))
+                  )
+    )
+        
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  #############Kruskal-Wallis rank sum test#########
+  
+  #drop down list to select the variable name 
+  output$metalvar5 <- renderUI({ 
+    selectInput("dbmetalvar5","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$groupvar5 <- renderUI({ 
+    selectInput("dbgroupvar5","Select a Group (location) variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  output$kruskalwallistest<-renderPrint({
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar5]
+    
+    
+    Location <- data5()
+    Location <- Location[,input$dbgroupvar5]
+    
+    kruskal.test(Concentration~Location, data = data)
+    
+  })
+  
+  
+  
+  output$tb9<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Kruskal-Wallis rank sum test", tags$br(),uiOutput("metalvar5"),uiOutput("groupvar5"), verbatimTextOutput("kruskalwallistest")))
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  #############t test#########
+  
+  #drop down list to select the variable name 
+  output$metalvar6 <- renderUI({ 
+    selectInput("dbmetalvar6","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$muvalue <- renderUI({ 
+    textAreaInput("muvalue", "Enter the value that you need to test the hypothesis. Ex: 10","Standard value" , width = "500px")
+    
+  })
+  
+  
+
+  output$btnZT <- renderUI({ 
+    actionButton(inputId="btnZT", label="Submit Values", value=FALSE)
+    
+  })
+  
+  btn<-eventReactive(input$btnZT,data5())
+  
+  
+  output$ztest<-renderPrint({btn()
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar6]
+  
+    
+    t.test(Concentration, mu = as.double(input$muvalue) , alternative = "greater")
+    
+  })
+  
+  
+  
+  output$tb10<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("t-test", tags$br(),uiOutput("metalvar6"),uiOutput("muvalue"), uiOutput("btnZT"),verbatimTextOutput("ztest")))
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  #############Wilcoxon Signed rank test#########
+  
+  #drop down list to select the variable name 
+  output$metalvar7 <- renderUI({ 
+    selectInput("dbmetalvar7","Select a variable:", sort(as.character(colnames(data5()))))
+    
+  })
+  
+  
+  #drop down list to select the group variable name
+  output$muvalue2 <- renderUI({ 
+    textAreaInput("muvalue2", "Enter the value that you need to test the hypothesis. Ex: 10","WHO recomended value" , width = "500px")
+    
+  })
+  
+  
+  
+  output$btnWT <- renderUI({ 
+    actionButton(inputId="btnWT", label="Submit Values", value=FALSE)
+    
+  })
+  
+  btn2<-eventReactive(input$btnWT,data5())
+  
+  
+  output$Wtest<-renderPrint({btn2()
+    data<-data5()
+    
+    Concentration <- data5()
+    Concentration <- Concentration[,input$dbmetalvar7]
+    
+    
+    wilcox.test(Concentration, mu = as.double(input$muvalue2) , alternative = "greater")
+    
+  })
+  
+  
+  
+  output$tb11<- renderUI({
+    if(is.null(data5())){return()}
+    else
+      tabsetPanel(
+        
+        tabPanel("Wilcoxon Signed rank test", tags$br(),uiOutput("metalvar7"),uiOutput("muvalue2"), uiOutput("btnWT"),verbatimTextOutput("Wtest")))
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  #################################################################################################################################
+}
+)
